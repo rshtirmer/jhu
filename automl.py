@@ -5,6 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import time
+import requests
 
 if "page" not in st.session_state:
     st.session_state.page = "landing"
@@ -30,30 +31,34 @@ def landing_page():
         st.session_state.page = "upload"
 
 
+
 def dataset_upload():
     st.title("Upload Your Dataset")
     st.write("""
         Please upload a CSV file containing tabular data. Ensure the dataset has a target column for classification.
     """)
     
-    # Add a section for downloading an example CSV
     st.write("### Example Dataset:")
     st.write("""
-        To help you understand the format, here is an example dataset:
+        To help you understand the format, you can download an example dataset:
     """)
-    example_csv = """Feature_1,Feature_2,Feature_3,Target
-37.454011884736246,31,0.16587828927856152,0
-95.07143064099162,38,5.12093058299281,1
-73.1993941811405,48,2.2649577519793795,0
-59.86584841970366,31,6.451727904094499,1
-15.601864044243651,3,1.7436642900499144,0
-"""
-    st.download_button(
-        label="Download Example CSV",
-        data=example_csv,
-        file_name="example_dataset.csv",
-        mime="text/csv"
-    )
+    
+    example_csv_url = "https://raw.githubusercontent.com/rshtirmer/jhu/main/example.csv"
+    
+    try:
+        response = requests.get(example_csv_url)
+        if response.status_code == 200:
+            example_csv = response.content
+            st.download_button(
+                label="Download Example CSV",
+                data=example_csv,
+                file_name="example_dataset.csv",
+                mime="text/csv"
+            )
+        else:
+            st.warning("Unable to fetch the example dataset. Please check the URL or try again later.")
+    except Exception as e:
+        st.error(f"An error occurred while fetching the example dataset: {e}")
 
     uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
