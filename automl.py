@@ -35,6 +35,26 @@ def dataset_upload():
     st.write("""
         Please upload a CSV file containing tabular data. Ensure the dataset has a target column for classification.
     """)
+    
+    # Add a section for downloading an example CSV
+    st.write("### Example Dataset:")
+    st.write("""
+        To help you understand the format, here is an example dataset:
+    """)
+    example_csv = """Feature_1,Feature_2,Feature_3,Target
+37.454011884736246,31,0.16587828927856152,0
+95.07143064099162,38,5.12093058299281,1
+73.1993941811405,48,2.2649577519793795,0
+59.86584841970366,31,6.451727904094499,1
+15.601864044243651,3,1.7436642900499144,0
+"""
+    st.download_button(
+        label="Download Example CSV",
+        data=example_csv,
+        file_name="example_dataset.csv",
+        mime="text/csv"
+    )
+
     uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
     if uploaded_file:
@@ -50,7 +70,6 @@ def dataset_upload():
                 st.session_state.page = "models"
             else:
                 st.error("Target column not found in the dataset.")
-
 
 def model_execution():
     st.title("Running Models")
